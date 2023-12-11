@@ -18,6 +18,10 @@ main {
   padding: 1rem;
 }
 
+a {
+  text-decoration: none;
+}
+
 .main-header {
   width: 100%;
   height: 4rem;
@@ -82,15 +86,23 @@ main {
   color: #333;
 }
 
+.card__image {
+  max-height: 250px;
+  overflow: hidden;
+}
+
 .card__image img {
   width: 100%;
-  height: auto;
-  border-radius: 6px 6px 0 0; /* Bordes redondeados en la imagen superior */
+  border-radius: 6px 6px 0 0;
+  object-fit: fill;
 }
 
 .card__actions {
   padding: 1.5rem;
   text-align: center;
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 
 .card__actions button,
