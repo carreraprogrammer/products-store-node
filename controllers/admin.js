@@ -4,6 +4,8 @@ exports.getProducts = async (req, res, next) => {
   try {
     const products = await Product.fetchAll();
 
+    console.log(products);
+
     res.render('admin/products', {
       prods: products,
       pageTitle: 'Admin Products',
