@@ -18,11 +18,12 @@ exports.postAddProduct = async (req, res, next) => {
 
     await product.save();
 
-    res.redirect('/');
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
+
+  res.redirect('/');
 };
 
 exports.getProducts = async (req, res, next) => {
