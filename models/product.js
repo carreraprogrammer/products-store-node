@@ -25,6 +25,7 @@ module.exports = class Product {
   }
 
   async save() {
+    this.id = Math.random().toString();
     try {
       const products = await getProductsFromFile();
       products.push(this);
