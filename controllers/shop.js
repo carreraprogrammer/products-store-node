@@ -1,4 +1,5 @@
 const Product = require('../models/product');
+const Cart = require('../models/cart');
 
 exports.getProducts = async (req, res, next) => {
   try {
@@ -49,7 +50,13 @@ exports.getCart = (req, res, next) => {
 
 exports.postCart = async (req, res, next) => {
   const prodId = req.body.productId;
-  console.log(prodId);
+  try {
+    const product = await Product.findById(prodId);
+    Cart.addProduct(prodId, product.price);
+  } catch(err) {
+    console.error(err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
   res.redirect('/cart');
 };
 
