@@ -43,15 +43,44 @@ exports.getIndex = async (req, res, next) => {
 
 exports.getCart = async (req, res, next) => {
   try {
+    Cart.getCart(async (cart) => {
+      if (!cart) {
+        // Handle the case where the cart is not available
+        console.log('Cart not available');
+        res.render('shop/cart', {
+          path: '/cart',
+          pageTitle: 'Your Cart',
+          products: []
+        });
+        return;
+      }
 
-    const cart = await Cart.getCart();
+      const products = await Product.fetchAll();
 
-    res.render('shop/cart', {
-      path: '/cart',
-      pageTitle: 'Your Cart'
+      const cartProducts = products
+        .filter((product) =>
+          cart.products.some((cartProduct) => cartProduct.id === product.id)
+        )
+        .map((product) => ({
+          productData: product,
+          qty: cart.products.find(
+            (cartProduct) => cartProduct.id === product.id
+          ).qty
+        }));
+
+      console.log('******** CART PRODUCTS ********');
+      console.log(cartProducts);
+      console.log('******** CART PRODUCTS ********');
+
+      res.render('shop/cart', {
+        path: '/cart',
+        pageTitle: 'Your Cart',
+        products: cartProducts
+      });
     });
-  } catch (err) {
-
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 };
 
