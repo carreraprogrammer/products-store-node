@@ -15,7 +15,9 @@ exports.postAddProduct = async (req, res, next) => {
   try {
     const { title, imageUrl, description, price } = req.body;
 
-    const product = new Product(title, imageUrl, description, price);
+    const productId = null;
+
+    const product = new Product(productId, title, imageUrl, description, price);
 
     await product.save();
 
@@ -49,6 +51,22 @@ exports.getEditProduct = async (req, res, next) => {
     console.error(error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
+};
+
+exports.postEditProduct = async (req, res, next) => {
+  try {
+    const { productId, title, imageUrl, description, price } = req.body;
+
+    const product = new Product(productId, title, imageUrl, description, price);
+
+    await product.save();
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+
+  res.redirect('/admin/products');
 };
 
 exports.getProducts = async (req, res, next) => {

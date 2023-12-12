@@ -17,7 +17,8 @@ const getProductsFromFile = async () => {
 };
 
 module.exports = class Product {
-  constructor(title, imageUrl, description, price) {
+  constructor(id, title, imageUrl, description, price) {
+    this.id = id
     this.title = title;
     this.imageUrl = imageUrl;
     this.description = description;
@@ -25,15 +26,26 @@ module.exports = class Product {
   }
 
   async save() {
-    this.id = Math.random().toString();
-    try {
-      const products = await getProductsFromFile();
+
+   const products = await getProductsFromFile();
+
+   try {
+    const productIndex = products.findIndex(p => p.id === this.id);
+    console.log(`THIS IS THE PRODUCTS ARRAY: ${productIndex}`)
+    
+    if (productIndex >= 0) {
+      products[productIndex] = this;
+    } else {
+      this.id = Math.random().toString();
       products.push(this);
-      await fs.writeFile(p, JSON.stringify(products));
-    } catch (err) {
-      console.log(err);
     }
-  }
+   } catch (err) {
+     console.log(err);
+   }
+
+    await fs.writeFile(p, JSON.stringify(products));
+    console.log(`Product ${this.id} saved`)
+  }  
 
   static async fetchAll() {
     try {
