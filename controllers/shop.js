@@ -41,11 +41,18 @@ exports.getIndex = async (req, res, next) => {
   };
 };
 
-exports.getCart = (req, res, next) => {
-  res.render('shop/cart', {
-    path: '/cart',
-    pageTitle: 'Your Cart'
-  });
+exports.getCart = async (req, res, next) => {
+  try {
+
+    const cart = await Cart.getCart();
+
+    res.render('shop/cart', {
+      path: '/cart',
+      pageTitle: 'Your Cart'
+    });
+  } catch (err) {
+
+  }
 };
 
 exports.postCart = async (req, res, next) => {
