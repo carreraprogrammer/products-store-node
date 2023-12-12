@@ -66,7 +66,7 @@ module.exports = class Product {
   }
 
   static async deleteById(id) {
-    
+
     const products = await getProductsFromFile();
 
     try {
