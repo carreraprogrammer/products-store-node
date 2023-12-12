@@ -96,6 +96,27 @@ exports.postCart = async (req, res, next) => {
   res.redirect('/cart');
 };
 
+exports.postCartDeleteProduct = async (req, res, next) => {
+  const prodId = req.body.productId;
+
+  try {
+    const product = await Product.findById(prodId);
+
+    if (!product) {
+      // Handle the case where the product is not found
+      console.log('Product not found');
+      res.redirect('/cart');
+      return;
+    }
+
+    Cart.deleteById(prodId, product.price);
+    res.redirect('/cart');
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
 exports.getOrders = (req, res, next) => {
   res.render('shop/orders', {
     path: '/orders',
