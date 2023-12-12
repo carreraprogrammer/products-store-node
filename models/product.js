@@ -64,4 +64,17 @@ module.exports = class Product {
       console.log(err);
     }
   }
+
+  static async deleteById(id) {
+    
+    const products = await getProductsFromFile();
+
+    try {
+      const updatedProducts = products.filter(p => p.id !== id);
+      await fs.writeFile(p, JSON.stringify(updatedProducts));
+      console.log(`Product ${id} deleted`);
+    } catch (err) {
+      console.log(err);
+    }
+  }
 };

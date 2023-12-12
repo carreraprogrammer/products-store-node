@@ -73,13 +73,23 @@ exports.getProducts = async (req, res, next) => {
   try {
     const products = await Product.fetchAll();
 
-    console.log(products);
-
     res.render('admin/products', {
       prods: products,
       pageTitle: 'Admin Products',
       path: '/admin/products'
     });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+exports.postDeleteProduct = async (req, res, next) => {
+  const productId = req.body.productId
+  try {
+    await Product.deleteById(productId);
+    console.log('DESTROYED PRODUCT' + productId);
+    res.redirect('/admin/products');
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal Server Error' });
