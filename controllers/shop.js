@@ -28,17 +28,15 @@ exports.getProduct = async (req, res, next) => {
 
 exports.getIndex = async (req, res, next) => {
   try {
-    const products = await Product.fetchAll();
-
+    const [rows, fieldData] = await Product.fetchAll();
     res.render('shop/index', {
-      prods: products,
+      prods: rows,
       pageTitle: 'Shop',
       path: '/'
     });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  };
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 exports.getCart = async (req, res, next) => {

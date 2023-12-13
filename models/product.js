@@ -1,20 +1,4 @@
-const fs = require('fs').promises;
-const path = require('path');
-
-const p = path.join(
-  path.dirname(require.main.filename),
-  'data',
-  'products.json'
-);
-
-const getProductsFromFile = async () => {
-  try {
-    const fileContent = await fs.readFile(p, 'utf8');
-    return JSON.parse(fileContent);
-  } catch (err) {
-    return [];
-  }
-};
+const db = require('../util/database');
 
 module.exports = class Product {
   constructor(id, title, imageUrl, description, price) {
@@ -47,13 +31,8 @@ module.exports = class Product {
     console.log(`Product ${this.id} saved`)
   }  
 
-  static async fetchAll() {
-    try {
-      return await getProductsFromFile();
-    } catch (err) {
-      console.log(err);
-      return [];
-    }
+  static fetchAll() {
+    return db.execute('SELECT * FROM products');
   }
 
   static async findById(id) {
