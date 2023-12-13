@@ -3,10 +3,10 @@ const Cart = require('../models/cart');
 
 exports.getProducts = async (req, res, next) => {
   try {
-    const products = await Product.fetchAll();
+    const [rows, fieldData] = await Product.fetchAll();
 
     res.render('shop/product-list', {
-      prods: products,
+      prods: rows,
       pageTitle: 'All Products',
       path: '/products'
     });
@@ -18,12 +18,19 @@ exports.getProducts = async (req, res, next) => {
 
 exports.getProduct = async (req, res, next) => {
   const prodId = req.params.productId;
-  const product = await Product.findById(prodId);
-  console.log(product);
-  res.render('shop/product-detail', 
-  { product: product,
-    pageTitle: product.title,
-    path: '/products'});
+  
+  try {
+    const [ product ] = await Product.findById(prodId);
+    console.log(product)
+    res.render('shop/product-detail', {
+      product: product[0],
+      pageTitle: product.title,
+      path: '/products'
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
 };
 
 exports.getIndex = async (req, res, next) => {

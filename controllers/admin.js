@@ -13,21 +13,19 @@ exports.getAddProduct = (req, res, next) => {
 };
 
 exports.postAddProduct = async (req, res, next) => {
-  try {
-    const { title, imageUrl, description, price } = req.body;
+ try {
+  const { title, imageUrl, description, price } = req.body;
 
-    const productId = null;
+  const product = new Product(null, title, imageUrl, description, price);
 
-    const product = new Product(productId, title, imageUrl, description, price);
-
-    await product.save();
-
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
+  await product.save();
 
   res.redirect('/');
+ 
+ } catch (error) {
+   console.error(error);
+   res.status(500).json({ error: 'Internal Server Error' });
+ }
 };
 
 exports.getEditProduct = async (req, res, next) => {

@@ -10,25 +10,8 @@ module.exports = class Product {
   }
 
   async save() {
-
-   const products = await getProductsFromFile();
-
-   try {
-    const productIndex = products.findIndex(p => p.id === this.id);
-    console.log(`THIS IS THE PRODUCTS ARRAY: ${productIndex}`)
-    
-    if (productIndex >= 0) {
-      products[productIndex] = this;
-    } else {
-      this.id = Math.random().toString();
-      products.push(this);
-    }
-   } catch (err) {
-     console.log(err);
-   }
-
-    await fs.writeFile(p, JSON.stringify(products));
-    console.log(`Product ${this.id} saved`)
+    return db.execute('INSERT INTO products (title, price, imageUrl, description) VALUES (?, ?, ?, ?)',
+      [this.title, this.price, this.imageUrl, this.description]);
   }  
 
   static fetchAll() {
@@ -36,12 +19,7 @@ module.exports = class Product {
   }
 
   static async findById(id) {
-    try {
-      const products = await getProductsFromFile();
-      return products.find(p => p.id === id);
-    } catch (err) {
-      console.log(err);
-    }
+    return db.execute('SELECT * FROM products WHERE products.id = ?', [id])
   }
 
   static async deleteById(id) {
