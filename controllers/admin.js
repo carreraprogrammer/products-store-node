@@ -40,7 +40,8 @@ exports.getEditProduct = async (req, res, next) => {
     return res.redirect('/');
   }
   const prodId = req.params.productId;
-  const product = await Product.findByPk(prodId);
+  const product = await req.user
+                            .getProducts({ where: { id: prodId } });
 
   try {
     if (!product) {
@@ -79,7 +80,7 @@ exports.postEditProduct = async (req, res, next) => {
 
 exports.getProducts = async (req, res, next) => {
   try {
-    const products = await Product.findAll();
+    const products = req.user.getProducts();
 
     res.render('admin/products', {
       prods: products,
