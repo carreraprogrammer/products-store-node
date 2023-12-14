@@ -46,65 +46,58 @@ exports.getIndex = async (req, res, next) => {
 };
 
 exports.getCart = async (req, res, next) => {
+
   try {
-    Cart.getCart(async (cart) => {
-      if (!cart) {
-        // Handle the case where the cart is not available
-        console.log('Cart not available');
-        res.render('shop/cart', {
-          path: '/cart',
-          pageTitle: 'Your Cart',
-          products: []
-        });
-        return;
-      }
+    const cart = await req.user.getCart();
+    const products = await cart.getProducts();
 
-      const products = await Product.findAll();
-
-      const cartProducts = products
-        .filter((product) =>
-          cart.products.some((cartProduct) => cartProduct.id === product.id)
-        )
-        .map((product) => ({
-          productData: product,
-          qty: cart.products.find(
-            (cartProduct) => cartProduct.id === product.id
-          ).qty
-        }));
-
-      console.log('******** CART PRODUCTS ********');
-      console.log(cartProducts);
-      console.log('******** CART PRODUCTS ********');
-
-      res.render('shop/cart', {
-        path: '/cart',
-        pageTitle: 'Your Cart',
-        products: cartProducts
-      });
+    res.render('shop/cart', {
+      path: '/cart',
+      pageTitle: 'Your Cart',
+      products: products
     });
-  } catch (error) {
-    console.error(error);
+  } catch(err) {
+    console.error(err);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
 
 exports.postCart = async (req, res, next) => {
   const prodId = req.body.productId;
+  let fetchedCart;
+  let newQuantity = 1;
+
   try {
-    const product = await Product.findById(prodId);
-    Cart.addProduct(prodId, product.price);
-  } catch(err) {
-    console.error(err);
+    const cart = await req.user.getCart();
+    fetchedCart = cart;
+
+    const products = await cart.getProducts({ where: { id: prodId } });
+    let product;
+
+    if (products.length > 0) {
+      product = products[0];
+      const oldQuantity = product.cartItem.quantity;
+      newQuantity = oldQuantity + 1;
+    } else {
+      product = await Product.findByPk(prodId);
+    }
+
+    await fetchedCart.addProduct(product, {
+      through: { quantity: newQuantity }
+    });
+
+    res.redirect('/cart');
+  } catch (error) {
+    console.error(error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
-  res.redirect('/cart');
 };
 
 exports.postCartDeleteProduct = async (req, res, next) => {
   const prodId = req.body.productId;
 
   try {
-    const product = await Product.findById(prodId);
+    const product = await Product.findByPk(prodId);
 
     if (!product) {
       // Handle the case where the product is not found

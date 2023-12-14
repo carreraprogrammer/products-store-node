@@ -80,7 +80,7 @@ exports.postEditProduct = async (req, res, next) => {
 
 exports.getProducts = async (req, res, next) => {
   try {
-    const products = req.user.getProducts();
+    const products = await Product.findAll();
 
     res.render('admin/products', {
       prods: products,
