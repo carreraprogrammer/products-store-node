@@ -61,16 +61,19 @@ exports.postEditProduct = async (req, res, next) => {
   try {
     const { productId, title, imageUrl, description, price } = req.body;
 
-    const product = new Product(productId, title, imageUrl, description, price);
+    const product = await Product.findByPk(productId);
 
+    product.title = title;
+    product.price = price;
+    product.imageUrl = imageUrl;
+    product.description = description;
     await product.save();
+    res.redirect('/admin/products');
 
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
-
-  res.redirect('/admin/products');
 };
 
 exports.getProducts = async (req, res, next) => {
