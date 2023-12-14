@@ -3,10 +3,10 @@ const Cart = require('../models/cart');
 
 exports.getProducts = async (req, res, next) => {
   try {
-    const [rows, fieldData] = await Product.fetchAll();
-
+    const products = await Product.findAll();
+    console.log(products)
     res.render('shop/product-list', {
-      prods: rows,
+      prods: products,
       pageTitle: 'All Products',
       path: '/products'
     });
@@ -35,9 +35,9 @@ exports.getProduct = async (req, res, next) => {
 
 exports.getIndex = async (req, res, next) => {
   try {
-    const [rows, fieldData] = await Product.fetchAll();
+    const products = await Product.findAll();
     res.render('shop/index', {
-      prods: rows,
+      prods: products,
       pageTitle: 'Shop',
       path: '/'
     });
@@ -60,7 +60,7 @@ exports.getCart = async (req, res, next) => {
         return;
       }
 
-      const products = await Product.fetchAll();
+      const products = await Product.findAll();
 
       const cartProducts = products
         .filter((product) =>
