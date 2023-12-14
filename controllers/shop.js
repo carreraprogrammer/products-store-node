@@ -97,16 +97,20 @@ exports.postCartDeleteProduct = async (req, res, next) => {
   const prodId = req.body.productId;
 
   try {
-    const product = await Product.findByPk(prodId);
+    const cart = await req.user.getCart();
 
-    if (!product) {
+    const products = await cart.getProducts({ where: { id: prodId } });
+
+    if (!products || products.length === 0) {
       // Handle the case where the product is not found
       console.log('Product not found');
       res.redirect('/cart');
       return;
     }
 
-    Cart.deleteById(prodId, product.price);
+    const product = products[0];
+
+    await product.cartItem.destroy();
     res.redirect('/cart');
   } catch (error) {
     console.error(error);
