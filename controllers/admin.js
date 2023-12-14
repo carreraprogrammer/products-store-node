@@ -16,12 +16,13 @@ exports.postAddProduct = async (req, res, next) => {
  try {
   const { title, imageUrl, description, price } = req.body;
 
-  Product.create({
-    title: title,
-    price: price,
-    imageUrl: imageUrl,
-    description: description
-  })
+  req.user
+    .createProduct({
+      title,
+      price,
+      imageUrl,
+      description
+    })
   .then(result => {
     console.log(result);
     res.redirect('/admin/products');
