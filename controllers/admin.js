@@ -96,9 +96,7 @@ exports.postDeleteProduct = async (req, res, next) => {
   const product = await Product.findByPk(productId);
 
   try {
-    await Product.deleteById(productId);
-    console.log('DESTROYED PRODUCT' + productId);
-    Cart.deleteById(productId, product.price);
+    await product.destroy();
     res.redirect('/admin/products');
   } catch (error) {
     console.error(error);
