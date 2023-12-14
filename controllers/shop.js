@@ -20,15 +20,14 @@ exports.getProduct = async (req, res, next) => {
   const prodId = req.params.productId;
   
   try {
-    const [ product ] = await Product.findById(prodId);
-    console.log(product)
+    const product = await Product.findByPk(prodId);
     res.render('shop/product-detail', {
-      product: product[0],
+      product: product,
       pageTitle: product.title,
       path: '/products'
     });
-  } catch (error) {
-    console.error(error);
+  } catch(err) {
+    console.error(err);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
